@@ -33,6 +33,7 @@ class MainViewModel(private val adviceSlipRepository: AdviceSlipRepository, priv
             .map {
                 it.advice
             }
+            .onErrorReturnItem("Error consuming stream")
         )
     }
 
@@ -43,6 +44,7 @@ class MainViewModel(private val adviceSlipRepository: AdviceSlipRepository, priv
             .map {
                 getAdviceAndTransform(it)
             }
+            .onErrorReturnItem("Error consuming stream")
         )
     }
 
@@ -54,6 +56,7 @@ class MainViewModel(private val adviceSlipRepository: AdviceSlipRepository, priv
             .map {
                 it.slip.advice
             }
+            .onErrorReturnItem("Error consuming stream")
         )
     }
 
