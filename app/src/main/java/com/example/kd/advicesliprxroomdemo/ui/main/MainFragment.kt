@@ -1,24 +1,23 @@
 package com.example.kd.advicesliprxroomdemo.ui.main
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.example.kd.advicesliprxroomdemo.R
-import com.example.kd.advicesliprxroomdemo.persistence.AdviceSlipRepository
-import com.example.kd.advicesliprxroomdemo.ui.utils.Reactions
+import dagger.android.support.DaggerFragment
 import kotlinx.android.synthetic.main.main_fragment.*
+import javax.inject.Inject
 
-class MainFragment : Fragment() {
+class MainFragment : DaggerFragment() {
 
     companion object {
         fun newInstance() = MainFragment()
     }
 
-    private lateinit var viewModel: MainViewModel
+    @Inject lateinit var viewModelFactory: ViewModelProvider.Factory
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -30,12 +29,7 @@ class MainFragment : Fragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         this.context?.let {
-            val adviceSlipRepository = AdviceSlipRepository.getInstance(it)
-            val reactions = Reactions.getInstance(it)
-
-            viewModel = ViewModelProvider(this, MainViewModelFactory(adviceSlipRepository, reactions)).get(
-                MainViewModel::class.java
-            )
+            val viewModel = ViewModelProvider(this, viewModelFactory)[MainViewModel::class.java]
 
             val uppercaseAdviceObserver = Observer<String> { advice ->
                 transformedAdvice.text = advice

@@ -5,15 +5,16 @@ import androidx.lifecycle.LiveDataReactiveStreams
 import androidx.lifecycle.ViewModel
 import com.example.kd.advicesliprxroomdemo.model.AdviceSlip
 import com.example.kd.advicesliprxroomdemo.persistence.AdviceSlipRepository
-import com.example.kd.advicesliprxroomdemo.service.AdviceSlipConstants
+import com.example.kd.advicesliprxroomdemo.service.AdviceSlipServiceConstants
 import com.example.kd.advicesliprxroomdemo.ui.utils.Reactions
 import io.reactivex.Flowable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import java.util.concurrent.TimeUnit
+import javax.inject.Inject
 
-class MainViewModel(private val adviceSlipRepository: AdviceSlipRepository, private val reactions: Reactions) : ViewModel() {
+class MainViewModel @Inject constructor(private val adviceSlipRepository: AdviceSlipRepository, private val reactions: Reactions) : ViewModel() {
     val persistedAdvice by lazy {
         setUpPersistedAdviceLiveData()
     }
@@ -49,7 +50,7 @@ class MainViewModel(private val adviceSlipRepository: AdviceSlipRepository, priv
     }
 
     private fun setUpTickingAdviceLiveData() : LiveData<String> {
-        return LiveDataReactiveStreams.fromPublisher(Flowable.interval(AdviceSlipConstants.TICKING_INTERVAL_IN_SECONDS, TimeUnit.SECONDS)
+        return LiveDataReactiveStreams.fromPublisher(Flowable.interval(AdviceSlipServiceConstants.TICKING_INTERVAL_IN_SECONDS, TimeUnit.SECONDS)
             .flatMap { adviceSlipRepository.getAdviceSlipFromApi() }
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())

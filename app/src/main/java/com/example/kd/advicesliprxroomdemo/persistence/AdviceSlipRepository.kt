@@ -1,18 +1,16 @@
 package com.example.kd.advicesliprxroomdemo.persistence
 
-import android.content.Context
+import com.example.kd.advicesliprxroomdemo.di.ApplicationModule
 import com.example.kd.advicesliprxroomdemo.model.AdviceSlip
-import com.example.kd.advicesliprxroomdemo.service.AdviceSlipServiceImplementation
-import com.example.kd.advicesliprxroomdemo.utils.SingletonHolder
+import com.example.kd.advicesliprxroomdemo.service.AdviceSlipService
 import io.reactivex.Completable
 import io.reactivex.Flowable
+import javax.inject.Inject
 
-class AdviceSlipRepository private constructor(context: Context) {
-    private val adviceSlipServiceInstance =
-        AdviceSlipServiceImplementation.instance
-    private val adviceSlipDatabaseInstance =
-        AdviceSlipDatabase.getInstance(context)
-
+class AdviceSlipRepository @Inject constructor(
+    @ApplicationModule.LocalDataSource private val adviceSlipDatabaseInstance: AdviceSlipDatabase,
+    @ApplicationModule.RemoteDataSource private val adviceSlipServiceInstance: AdviceSlipService
+) {
     fun getAdviceSlipFromApi(): Flowable<AdviceSlip> {
         return adviceSlipServiceInstance.getSlip()
     }
@@ -28,6 +26,4 @@ class AdviceSlipRepository private constructor(context: Context) {
     fun storeAdviceSlipsInDb(adviceSlips: List<com.example.kd.advicesliprxroomdemo.persistence.AdviceSlip>): Completable {
         return adviceSlipDatabaseInstance.adviceSlipDao().insertAll(adviceSlips)
     }
-
-    companion object : SingletonHolder<AdviceSlipRepository, Context>(::AdviceSlipRepository)
 }

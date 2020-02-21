@@ -5,6 +5,6 @@ import io.reactivex.Flowable
 import retrofit2.http.GET
 
 interface AdviceSlipService {
-    @GET(AdviceSlipConstants.ADVICE_PATH)
+    @GET(AdviceSlipServiceConstants.ADVICE_PATH)
     fun getSlip(): Flowable<AdviceSlip>
 }
